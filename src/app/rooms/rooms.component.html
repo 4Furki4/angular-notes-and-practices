@@ -1,0 +1,12 @@
+<h2>Welcome to {{hotelName}}</h2>
+<hinv-header [title]="'changed'"></hinv-header>
+<h3>Are rooms hidden ?</h3>
+<div [ngStyle]="{color: 'red'}">Yeşiil</div>
+<div *ngIf="rooms?.availableRooms && rooms.availableRooms > 0">
+    <hinv-rooms-list [rooms]="roomList"
+    (selectedRoom)="selectRoom($event)"
+    [title]="title"></hinv-rooms-list>
+</div>
+<button (click)="toggle()">Toggle</button>
+<button class="btn btn-outline-dark" (click)="addRoom()">Add New Room</button>
+
