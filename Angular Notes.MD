@@ -462,7 +462,7 @@ changes['propName'] => it returns true or false
 
 
 
-### Using Other Component's member without @Input or @Outpu
+### Using Other Component's member without @Input or @Output
 
 - When we don't have access to another component with inputs and outputs but we wanna fetch their member, ViewChild Decorator can be used.
 
@@ -478,6 +478,8 @@ changes['propName'] => it returns true or false
   - Though, there is a way to override this and fetch the component in ngOnInıt.
     - If the component doesn't have any delay, add a new object has static member and set it true. Its default value is false not to cause any exception due to delay. If the child component is a async component, set it to false.
     - ``@ViewChild(HeaderComponent, {static:true}) headerComponent! : HeaderComponent;``
+
+- ViewChildren can be used for multiple childs
 
 ### ng-templates
 
@@ -496,3 +498,63 @@ export class AppComponent implements AfterViewInit {
   // componentRef can be used to get the props using componentRef.instance.Props
 }
 ````
+
+### Template Reference
+
+- It is similar to ng-templates
+````js
+    @ViewChild('name', {static: true}) nameEl! : ElementRef;
+
+    ngOnInit() {
+      this.nameEl.nativeElement.innerText = 31;
+    }
+````
+
+## Content Projection
+
+- We use ng-content to project the content passed into its selector.
+
+````js
+//  if we pass content without using ng-content like this 
+<hinv-container>
+    <h1>Hello from ng-content</h1>
+</hinv-container>
+// h1 element won't be displayed
+````
+
+````js
+// but if we use ng-content in container's html file, it will be displayed
+<ng-content></ng-content>
+````
+
+- Also we can decide the order of process of loading contents
+````js
+// The order we decide using in container.component.html
+<ng-content select="hinv-employee"></ng-content>
+<ng-content></ng-content>
+<ng-content select="hinv-rooms"></ng-content>
+
+//app.component.html
+
+<hinv-container>
+    <hinv-rooms></hinv-rooms>
+    <h1>Hello from ng-content</h1>
+    <hinv-employee></hinv-employee>
+</hinv-container>
+// even if we put these content the order of hinv-room - ngcontent - hinv-employee, order is overridden by the order we have decided in container.component.html
+````
+### ngContentInit
+
+- now it is abvious that we can access the components passed into ng-content element using ngContentInit.
+
+- The way we do it is that using ngAfterContentInit from afterContentInit interface.
+
+- there is no static option.
+
+
+### ngOnDestroy
+
+- ngOnDestroy is called when a component got destroyed. This is the last lifecycle hook.
+
+- ngOnDestroy is used to unsubscribe the data subscriptions so that the consuption can be reduced.
+

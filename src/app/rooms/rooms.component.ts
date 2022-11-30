@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { IRoom, IRoomList } from './IRoom';
 
@@ -7,10 +7,12 @@ import { IRoom, IRoomList } from './IRoom';
   templateUrl: './rooms.component.html',
   styleUrls: ['./rooms.component.scss'],
 })
-export class RoomsComponent implements OnInit, AfterViewInit, DoCheck {
+export class RoomsComponent implements OnInit, AfterViewInit, OnDestroy {
   
-  @ViewChild(HeaderComponent) headerComponent! : HeaderComponent;
-  
+  @ViewChildren(HeaderComponent) headerComponent! : QueryList<HeaderComponent>;
+  ngAfterViewInit(): void {
+    console.log(this.headerComponent);
+  }
   ngOnInit(): void {
     console.log(this.headerComponent)
     this.roomList = [
@@ -46,10 +48,10 @@ export class RoomsComponent implements OnInit, AfterViewInit, DoCheck {
   constructor(){
 
   }
-  ngDoCheck(): void {
-
+  ngOnDestroy(): void {
+    console.log("ngOnDestroy was called.");
+    
   }
-
   numberOfRooms : number = 10;
   hideRooms : boolean = true;
   public rooms : IRoom = {
@@ -60,13 +62,12 @@ export class RoomsComponent implements OnInit, AfterViewInit, DoCheck {
 
   roomList : IRoomList[] = []
   toggle() : void {
-    this.title = "Room List Changed";
+    this.hideRooms = !this.hideRooms;
   }
   hotelName : string = "Hilton Hotel";
 
   selectRoom(room:IRoomList){
     console.log(room);
-    console.log(this.headerComponent);
   }
 
   title! : string;
@@ -84,11 +85,6 @@ export class RoomsComponent implements OnInit, AfterViewInit, DoCheck {
     this.roomList = [...this.roomList, room];
   }
 
-  ngAfterViewInit(): void {
-
-    console.log(this.headerComponent.title);
-    this.headerComponent.title = "changed in ngafter"
-    console.log(this.headerComponent.title);
-  }
+  
 
 }
