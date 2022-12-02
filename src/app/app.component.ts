@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, Optional, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
+import { LoggerServiceService } from './logger-service.service';
 import { RoomsComponent } from './rooms/rooms.component';
 
 @Component({
@@ -8,11 +9,15 @@ import { RoomsComponent } from './rooms/rooms.component';
 })
 export class AppComponent implements AfterViewInit, OnInit {
   
+  constructor(@Optional() private loggerService : LoggerServiceService){
+
+  }
   // @ViewChild('user', {read : ViewContainerRef}) vcr! : ViewContainerRef;
   
     @ViewChild('name', {static: true}) nameEl! : ElementRef;
 
     ngOnInit() {
+      this.loggerService?.logMessage('AppComponent.ngOnInit')
     }
 
   ngAfterViewInit(): void {

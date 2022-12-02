@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RoomsService } from '../rooms/services/rooms.service';
 
 @Component({
   selector: 'hinv-header',
@@ -10,7 +11,12 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     
   }
-  constructor() {
+  constructor(private roomsService : RoomsService) {
+    if(roomsService)
+    {
+      console.log("roomsService exists");
+      
+    }
   }
   
 }

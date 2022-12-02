@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { IRoomList } from '../IRoom';
+import { RoomsService } from '../services/rooms.service';
 
 @Component({
   selector: 'hinv-rooms-list',

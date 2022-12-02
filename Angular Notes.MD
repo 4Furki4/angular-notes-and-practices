@@ -558,3 +558,137 @@ export class AppComponent implements AfterViewInit {
 
 - ngOnDestroy is used to unsubscribe the data subscriptions so that the consuption can be reduced.
 
+
+## Dependency Injection
+
+
+### Services 
+
+- Business needed in components will be written in services and we should have multiple services to be able to make them reusable. All those services will be used by injecting with DI provided by Angular 
+
+- Besides, services are responsible of sharing data between components and app.
+
+- Services injected in constructor should be defined as _private_. It is because that we should not access it from the templates.
+
+
+- The resolution of the servises are used to be done adding services to Providers bundle in appModule.
+
+- Now, Angular came with an approach that adds services by itself if the provideIn set to root.
+
+````js
+@Injectable({
+  providedIn: 'root'
+})
+````
+- In case the server gets never used, it will be removed from the sevices.
+- This approach gives a single instance of the service, which is also called Singleton Design Pattern.
+
+- If seperate service instances is desired, add the following to the @Component in the component in need of seperate instance of the service.
+
+``providers : [RoomsService]``
+
+
+- You should carefully decide whether you need single instance or not.
+
+
+### Dependency Resolution Steps
+
+- First off, component which the service injected in will be search the service.
+
+- Then parent module will be asked if it has the service or not. If it doesn't, app module will be asked.
+
+- platformBrowserDynamic will be asked if it has it lastly.
+
+- If there is no service provider, NullInjectorError will be thrown.
+
+
+### Resolution Modifiers
+
+#### Self
+
+- It forces to DI to get the service from its local injector (in @Component decorator's providers bundle.), if the local injector doesn't exist, throws nullinjector error.
+
+#### SkipSelf
+
+- It tells DI to skip cheking local injector. Even if service provider locally defined in @Component, it skips that.
+
+
+#### Optional
+
+- It tells DI not to throw error if the service provider not found. 
+
+- Optional modifier can be beneficial in case you wanna use some services just in development environment, and then remove the service providers.
+
+- OFC, you must add ? to variables which comes from optionally injected services bc they can be null so that we can skip the variable.
+
+
+#### Host
+
+- It hosts the service to the childen components(may come from ng-content)
+
+- The component @Host is used must have locally provider to the service.
+
+### Dependency Injection Providers
+
+
+#### Class Based Providers
+
+- ng g s name provides class based provider, so we have used them until now.
+
+
+#### Value Providers
+
+- Using object as a service
+
+- value providers can be useful when we get values like api endpoints from config files. Instead of injecting config classes, we can make them a service.
+
+The way proving values as a service - case 1 providing endpoint url:
+
+- in a ts file for service, use InjectionToken that takes an interface as a generic.
+``export const APP_SERVICE_CONFIG = new InjectionToken<IAppconfig>('app.config');``
+- the interface contains what you need as a value, it can be url string for an endpoint.
+``export interface IAppconfig{apiEndpoint : string;}``
+
+- then provide values in the ts file below Injection:
+
+````js
+export const APP_CONFIG : IAppconfig = {
+    apiEndpoint: environment.apiEndpoint
+};
+````
+
+- Then add the created service to providers in the app.module.
+
+````js
+.
+.
+.
+  providers: [
+    {
+      provide : APP_SERVICE_CONFIG,
+      useValue: APP_CONFIG
+    }
+  ],
+
+````
+
+- To consume the service, we need to use Inject decorator by passing the token we've defined to use.
+``constructor(@Inject(APP_SERVICE_CONFIG) private config : IAppconfig )``
+
+case 2 - using APIs like localstorage, sessionStorage or window as an value provider
+
+
+- We used InjectionToken again but didn't give any interface. We added a object that contains provideIn for DI and factory to return APIs
+````js
+export const localstorage = new InjectionToken<any>('localstorage', {
+    providedIn:'root',
+    factory() {
+        return localStorage;
+    },
+});
+````
+- Then injected in constructor
+
+``@Inject(localstorage) localStorage : Storage``
+
+- Reject using APIs directly and this way allows you to get the required services.
