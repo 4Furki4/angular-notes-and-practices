@@ -1,4 +1,7 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { IAppconfig } from 'src/app/AppConfig/appconfig.interface';
+import { APP_SERVICE_CONFIG } from 'src/app/AppConfig/appconfig.service';
 import { IRoomList } from '../IRoom';
 @Injectable()
 export class RoomsService {
@@ -32,12 +35,11 @@ export class RoomsService {
       rating: 4.1234
     }
   ]
-  constructor() {
+  constructor(@Inject(APP_SERVICE_CONFIG) private config : IAppconfig, private http : HttpClient  ) {
     console.log("Room Service is just initialized ");
-    
-   }
-
+  }
   getRooms(){
-    return this.roomList;
+    //return this.roomList;
+    return this.http.get("https://localhost:5500/api/Dictionary/Words/sarih");
   }
 }

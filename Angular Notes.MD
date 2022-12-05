@@ -692,3 +692,47 @@ export const localstorage = new InjectionToken<any>('localstorage', {
 ``@Inject(localstorage) localStorage : Storage``
 
 - Reject using APIs directly and this way allows you to get the required services.
+
+
+## HTTP and Observables
+
+
+### Setting HTTP Client
+
+- İmport HttpClientModule
+  - things ending with 'Module' might be set up in module level. 
+````js
+...
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule //which comes from @angular/common/http
+  ],
+...
+````
+
+- to proxy a localhost server, see this https://angular.io/guide/build#proxying-to-a-backend-server
+
+![image](pics/proxying.png)
+
+### Using HttpClient in services
+
+- OFC, it needed to be injected.
+
+- pass this to the constructor => ``private htpp : HttpClient``
+
+- then to make a get request,
+
+````js
+this.http.get("/api/dictionary/words"); // proxy will divert us to the localhost we set.
+````
+
+- the request will return an ``observable<type>``
+
+
+### Observable 
+
+- we use rxJs library and it uses the push arch. instead of pull.
+  - in push arch, a stream gets and push the data to us and we must subscribe to the stream to get the data.
+- Once we subscribe, we can access it as object by default. It can be changed though.
+  - by using generics, data can be taken desired type. => ``...get<Word>``

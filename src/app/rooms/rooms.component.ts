@@ -12,16 +12,18 @@ import { RoomsService } from './services/rooms.service';
   styleUrls: ['./rooms.component.scss'],
 })
 export class RoomsComponent implements OnInit, AfterViewInit, OnDestroy {
-  
+  roomList : IRoomList[] = []
   // @ViewChildren(HeaderComponent) headerComponent! : QueryList<HeaderComponent>;
   ngAfterViewInit(): void {
     // console.log(this.headerComponent);
   }
   ngOnInit(): void {
     // console.log(this.headerComponent)
+    this.roomService.getRooms().subscribe(data => console.log(data));
+    
     localStorage.setItem('name', 'Furkan')
   }
-  constructor(@Inject(APP_SERVICE_CONFIG) private config : IAppconfig, @Inject(localstorage) localStorage : Storage ){
+  constructor(private roomService : RoomsService ){
   }
   ngOnDestroy(): void {
     console.log("ngOnDestroy was called.");
@@ -35,7 +37,7 @@ export class RoomsComponent implements OnInit, AfterViewInit, OnDestroy {
     totalRooms:20
   };
 
-  roomList : IRoomList[] = []
+  
   toggle() : void {
     this.hideRooms = !this.hideRooms;
   }
