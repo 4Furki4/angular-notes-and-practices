@@ -6,13 +6,12 @@ import { RoomsService } from '../rooms/services/rooms.service';
   selector: 'hinv-container',
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.scss'],
-  providers: [RoomsService]
 })
 export class ContainerComponent implements AfterContentInit {
   
   @ContentChild(EmployeeComponent) employeeContent !: EmployeeComponent;
   
-  constructor(@Host() roomsService : RoomsService){
+  constructor(){
 
   }
 

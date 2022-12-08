@@ -736,3 +736,184 @@ this.http.get("/api/dictionary/words"); // proxy will divert us to the localhost
   - in push arch, a stream gets and push the data to us and we must subscribe to the stream to get the data.
 - Once we subscribe, we can access it as object by default. It can be changed though.
   - by using generics, data can be taken desired type. => ``...get<Word>``
+
+- a new Observable can be created using new Observable()
+  - It gets observer as a paramater, using arrow functions.
+  - observer.next() this means that you emit a new data that the subscriber will get.
+  - observer.complete() finishes the stream.
+  - observer.error is used to handle errors.
+  - field that the created observable is set to can be subscribed and give data that we pass using observer.next().
+
+
+````js
+// data can be received like that
+this.stream.subscribe(data => {
+      console.log(data);
+    });
+
+   this.stream.subscribe({
+    next : (value) => //value can be used here,
+    complete : () => // do sth when it is completed,
+    error : (err) => // take an action when get error using err.
+   })
+````
+
+
+### HTTP Request
+
+
+- We can reach the request status using HttpRequst class so that we can take actions depend on the status.
+  - just remember to use ``{reportProgress = true}`` while creating new Request and pass it to show some progress of the request.
+  - ![](pics/example_request.png)
+
+![Http Request Statuses](pics/http_request_status.png)
+
+#### HttpEventTypes
+
+- As I mentioned, the request status can be watched and used and this is the class we need to consume its status.
+
+- There how it is used:
+
+![Http Event Types](/pics/HttpEventStatus.png)
+
+- As seen, data variable's type is HttpEvent
+
+
+
+### RxJs Operators
+
+- as we cannot modify stream without getting inside of it, the operators are used to modify stream's data. 
+
+- pipe is used to call RxJs Operators
+#### shareReplay
+
+- It helps us to cache the data.
+- If the component uses the same instance of the service, it caches the request responses and avoid multiple requests.
+- Here it is how its done:
+![](pics/shareReplay.png)
+
+- $ sign is a convention to show the variable is stream.
+----------------
+- back to the pipes
+##### unsubscribtion using async pipe
+
+- subscribtion is a continuous relation which can burden on us if we don't unsub what we subbed to before.
+
+- we can unsub subscribtions in ngOnDestroy using Subscription class.
+
+- here it is:
+
+![unsub](pics/unsub.png)
+
+
+- Here async pipe comes in the ring!
+
+- set to the observable which can be subscribable to a property and use it as template syntax
+
+- async pipe takes the subscribtion in template like this ``{{wordList$ || async ||json }}``
+
+- it unwrap the data come from this sub and once the component destroyed, it takes care of the unsubscribtion process.
+
+  - step 1
+
+  ![](pics/asyncProp_prep.png)
+
+  - step 2 is ``{{wordList$ || async ||json }}`` this
+
+- attention! since async pipe can return null, you may need to change the data type to nullable.
+
+
+#### CatchError
+
+- CatchError is used to catch errors of streams.
+
+- The errors caught by CatchError are also assignable to Subject typed object which is a special Observable that can be both observable and observer. It means that you can pass error to it and also u can access the errors that is being passed to it.
+
+````js
+// this code should be written in service, do not write code like this in component class!!!!
+error$ = new Subject();
+  word$ = this.roomService.getWord$.pipe(
+    catchError((err) => {
+      this.error$.next(err.message); // error message is being passed to error$ which is a Subject object. It can be used with async pipe in template syntax to show the error.
+      return of(); // Dunno what it is
+    })
+  );
+
+````
+
+
+#### Map Operators
+
+- Map operators are used to change the data come from a stream and without subscribing it. It'll still return a stream bc we modiy it using rxJs operators.
+
+- Here is an example:
+
+![map operator to get length](pics/mapOperatorLength.png)
+
+- As seen, it returns ``Observable<number>`` it's bc we are getting the length.
+
+## Http Interceptors and APP_INITIALIZER
+
+- Before goint into interceptors, we can modify request header using HttpHeader class and pass it to the second parameter of the request as request's options.
+
+
+### Http Interceptors
+
+- It's a function that intercepts and modifies HTTP requests before they are handled by the app.
+
+- you can generate new Intercepter using ng cli
+  - ``ng g interceptor <name>``
+
+````js
+@Injectable()
+export class RequestInterceptorInterceptor implements HttpInterceptor {
+
+  constructor() {}
+
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    console.log(`Request in Interceptor ${request}`); 
+    return next.handle(request); // interceptor is a function that returns the intercepted request. Due to request is a stream, it dispatches the request till the end
+
+  }
+}
+````
+
+- ofc, u should register the Interceptor service to the app.module.
+
+- Also, you should register the interceptor in app.module like this:
+
+````js
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptor,
+      multi: true
+    }
+````
+
+- Angular has internally interceptors and we add one more. Interceptors are executed in sequence.
+
+- __Requests in an Interceptor class we created are modified using their clones. You cannot modify them directly__
+
+
+
+### App_Initializer
+
+- It is like a service or function which allows us to take an action, can be configs or anything, before app initialized.
+
+- Create a service that sends get req to a config.json file and set it to a local variable.
+
+- OFC, we need to register that service with a unique way.
+````js
+
+function initFactory(initService : InitService){
+  return () => initService.init; // init is a function here which we wanna call before app init.
+}
+    {
+      provide: APP_INITIALIZER, //comes from @angular/core
+      useFactory: initFactory, // we call the factory function we defined.
+      deps: [InitService], // Also, the dependencies that factory function can be multiple, so we pass deps as a array.
+      multi: true
+    }
+````
+
+- to access the provided data, just do what u do using services : INJECT THEM IN CONSTRUCTOR!
