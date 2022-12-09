@@ -917,3 +917,41 @@ function initFactory(initService : InitService){
 ````
 
 - to access the provided data, just do what u do using services : INJECT THEM IN CONSTRUCTOR!
+
+
+## Angular Router
+
+- Angular allows us to add routes and nested routes using SPA feature.
+
+- all routes can be configured in front-end
+
+
+### Setup Router
+
+- While creating a new app, CLI askes if you wanna add routing or not. If accepted, AppRoutingModule will be created consuming RouteModule inside of it and it'll be added in app.module. So no need to add another RouteModule in app.module.
+
+- In RoutingModule file, there is a array named routes. => ``const routes: Routes = [];``
+  - paths will be created using Routes instances here. Like this:
+````js
+const routes: Routes = [
+  {path: 'employee', component: EmployeeComponent}
+]
+````
+
+- to render the component that the route is set to, use this in app.component.html: `<router-outler></router-outler>`
+
+- here is adding a redirection when path is just empty: ``{path: '', redirectTo: 'rooms', pathMatch: "full"}``
+
+#### Using Anchors
+
+- Instead of using href, Angular offers routerLink property. Using href reloads the page, however routerLink doesn't reload pages and lets us to achieve SPA features.
+
+- OFC, you can use routerLink property in buttons, not just anchor elements.
+
+#### Router Outlet
+
+- Once router outlet is used, Angular gets the page url and checks if the given url mathces with any configuration defined in related RouterModule file. If matches, Angular adds the related component below the router outler element.
+
+- Make sure that router outlet is used while using routing functionalities.
+
+### Angular Material 
