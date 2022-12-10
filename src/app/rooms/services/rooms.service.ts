@@ -13,6 +13,7 @@ export class RoomsService {
   
   roomList: IRoomList[] = [
     {
+      roomNumber: 1,
       roomType: "Deluxe Room",
       amenities: "Air conditioner",
       price: 1200,
@@ -22,6 +23,7 @@ export class RoomsService {
       rating: 3.225
     },
     {
+      roomNumber: 2,
       roomType: "Ultra Deluxe Room",
       amenities: "Air conditioner, Free mini bar",
       price: 1800,
@@ -31,6 +33,7 @@ export class RoomsService {
       rating: 4.412
     },
     {
+      roomNumber: 3,
       roomType: "Ultra Premium VIP Deluxe Room",
       amenities: "Air conditioner, Free mini bar, jacuzzi",
       price: 200000,

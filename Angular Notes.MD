@@ -955,3 +955,80 @@ const routes: Routes = [
 - Make sure that router outlet is used while using routing functionalities.
 
 ### Angular Material 
+
+- It is UI component 
+
+- to set up Angular Material Project, use this: `ng add @angular/material`
+
+- Angular has a lot of prepaired components like navigation, table etc as we have in bootstrap.
+
+Once you add navigation component to use angular material, it provides us template made by angular in html file.
+
+It looks like this: 
+````js
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [opened]="(isHandset$ | async) === true">
+    <mat-toolbar>Menu</mat-toolbar>
+    <mat-nav-list> // we have side-nav to navigate our router paths.
+      <a mat-list-item [routerLink]="'rooms'">Rooms</a>
+      <a mat-list-item [routerLink]="'employee'">Employee</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>hotelinventoryapp</span>
+    </mat-toolbar>
+    <!-- Add Content Here --> // We add our content here.
+    <router-outlet></router-outlet> //I added router-outler to use the component come from routing config.
+  </mat-sidenav-content>
+</mat-sidenav-container>
+````
+
+
+### Wild Card Routes
+
+- to catch any url that doesn't exist, `{path: '**', component: NotFoundPage}`
+
+- Then ofc load notfound page when page not found using component prop.
+
+
+### Dynamic Routes
+
+- To make a dynamic url, we first need to corresponding routing that might be generated.
+  - `{path: 'rooms/:id', component: RoomsBookingComponent}`
+- Then we add routingLink to a button or something like that.
+  - `[routingLink]= ['/rooms', rooms.id]`
+    - make sure to add __/__ to add segments after rooms like this : _rooms/2_
+      - otherwise, it'll be __rooms/rooms/2__
+
+----------------
+
+
+### ActivatedRoute Service
+
+__Time to access passed data via id segment.__
+
+- ActivatedRoute comes from AngularRoute so that we don't need to import anything.
+
+- ``{path: 'rooms/:id', ...}`` we defined our segment's name as id, so when we access params using ActivatedRoute like this:
+
+- ``router.params.subscribe((params) => console.log(params))``
+  - It logs this: ``{id: 2}``
+  - You can reach properties using ['id']
+- we should not subscribe stream like we've done here.
+  - The way to access the data come from url is using snapshot.
+    - ``route.snapshot.params['id']``
+      - snapshot gets the data but is not able to update data if it is changed because it is not a stream!
+      - ofc, async pipe can come in handy to access updated data and doesn't lead to memory leaks
+- The other way to access route params is using paramsMap that allows us to use some methods like get, has, getAll etc.
+  - ``router.paramsMap.subscribe(map((params) => params.get('id'))``
+  - It can be used to see whether the optional parameters are used or not using has method.

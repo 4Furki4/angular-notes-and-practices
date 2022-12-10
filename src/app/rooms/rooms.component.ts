@@ -160,8 +160,10 @@ export class RoomsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   title!: string;
 
+  roomNumber : number = 3;
   addRoom() {
     const room: IRoomList = {
+      roomNumber: this.roomNumber++,
       roomType: "Ultra Premium VIP Deluxe Room",
       amenities: "Air conditioner, Free mini bar, internet and TV",
       price: 22500,
