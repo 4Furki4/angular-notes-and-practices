@@ -23,6 +23,8 @@ import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { RoomsBookingComponent } from './rooms/rooms-booking/rooms-booking.component';
+import { FormsModule } from '@angular/forms';
+import { WordComponent } from './Word/word.component';
 
 function initFactory(initService : InitService){
   return () => initService.init;
@@ -39,7 +41,8 @@ function initFactory(initService : InitService){
     EmployeeComponent,
     AppNavComponent,
     NotFoundComponent,
-    RoomsBookingComponent
+    RoomsBookingComponent,
+    WordComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,8 @@ function initFactory(initService : InitService){
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FormsModule
   ],
   providers: [
     {

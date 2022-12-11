@@ -1,0 +1,40 @@
+<div>
+    {{wordForm.valid | json}}
+</div>
+<div *ngIf="successfulMessage" class="alert alert-success">
+    {{successfulMessage}}
+</div>
+<div>
+    {{errors$ | async }}
+</div>
+<form #wordForm="ngForm" (ngSubmit)="AddWord(wordForm)" class="form-group mt-2">
+    <div class="form-group mt-3">
+        <input  class="form-control" type="text" name="Name"
+        placeholder="Word name"
+        [(ngModel)] = "word.name"
+        required minlength="2"
+        maxlength="60"
+        #wordName="ngModel">
+        <div class="alert alert-danger" *ngIf="wordName.errors?.['required'] && wordName.dirty">
+            A word name is required.
+        </div>
+        <div class="alert alert-danger" *ngIf="wordName.errors?.['minlength'] && wordName.dirty">
+            Minimum length of a word must be 2 characters.
+        </div>
+    </div>
+    <div>
+        <input #wordDefinition="ngModel" required type="text" name="definition" id="" class="form-control mt-3" placeholder="word definition" [(ngModel)] = "word.definitions[0].definition">
+        <div *ngIf="wordDefinition.dirty && wordDefinition.errors?.['required']" class="alert alert-danger">
+            A word definition is required.
+        </div>
+    </div>
+    <div>
+        <input required type="text" name="definitionType" id="" class="form-control mt-3" placeholder="word definition type" [(ngModel)] = "word.definitions[0].definitionType">
+    </div>
+    <div>
+        <input required type="text" name="ExampleSentence" id="" class="form-control mt-3" placeholder="example sentence" [(ngModel)] = "word.definitions[0].exampleSentence">
+    </div>
+    <div class="text-center">
+        <input [disabled]="wordForm.invalid" type="submit" class="btn btn-outline-warning mt-2" value="Submit">
+    </div>
+</form>

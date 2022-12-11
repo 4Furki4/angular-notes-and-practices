@@ -6,14 +6,14 @@
     - [Component](#components)
       - [Variables in @Component](#variables-in-component)
         - [selector](#selector)
-        - [template / templateUrl](#template--templateurl)
-        - [styles / styleUrls](#styles--styleurls)
+        - [template / templateUrl](#template-templateurl)
+        - [styles / styleUrls](#styles-styleurls)
       - [Note: prefix](#note-prefix)
     - [Directives](#directives)
       - [Structural Directives](#structural-directives)
       - [Attribute Directives](#attribute-directives)
       - [Built-in Directives](#built-in-directives)
-        - [Directive 1- ngIf](#directive-1-ngif--expression-that-can-be-converted-to-boolean)
+        - [Directive 1- ngIf](#directive-1-ngif-expression-that-can-be-converted-to-boolean)
           - [Optional chaning](#optional-chaining)
         - [Directive 2- ngFor](#directive-2-ngfor)
         - [Directive 3- ngSwitchCase](#directive-3-ngswitch)
@@ -78,7 +78,12 @@
     - [ActivatedRoute Service](#activatedroute-service)
   - [Forms](#forms)
     - [Template Driven Forms](#template-driven-forms)
-
+      - [Setting Up Forms](#setting-up-forms)
+      - [Binding](#binding)
+      - [Submitting](#submitting)
+    - [Validations](#validations)
+      - [Error Messages](#error-messages)
+    - [Resetting Forms](#resetting-forms)
 
 
 
@@ -1089,4 +1094,59 @@ Jumping to Forms
 ## Forms
 
 ### Template Driven Forms
+
+#### Setting up Forms
+
+- First, add FormsModule to Module
+
+- Then add a html form into a component's template.
+
+- Create a model to monitor what you'll bind using the form, it can be interface.
+
+#### Binding
+
+- To bind the data to our model we used in our component, we use ngModel property. 
+  - Here is a binding example: ``[(ngModel)] ="word.Name"``
+  - Once we bind our inputs to our model, what we type reflects to the variables bound.
+    - it can be seen using ``{{word | json}}`` top of the template using forms
+
+#### Submitting
+
+- To submit the inputs, first add (ngSubmit) to the form element and set to it a function used in component's ts file.
+  - Like this => `(ngSubmit)="AddWord()"`
+  - As the data given by input is already equal to the input, no need to setting properties to the input values, that's really good.
+  - then create the function given to the ngSubmit and do business using services etc.
+
+### Validations
+
+- html file validatons are used to validate inputs like required etc.
+
+- We need to access errors in the form, so we need an instance of the form!
+  - to get an instance of it, we use template reference and specify it as ngForm
+    - `#wordForm = "ngForm"` is added to the form element
+      - then u can access of form instance using interpolation syntax.
+        - `{{wordForm...}}`
+
+
+- There are a lot of form properties like valid, invalid, pristine, dirty, value and so on. We can access the values and status of the form using these properties.
+
+#### Error Messages
+
+- we need to access the input to reach and display the property.
+  - We use #templateReference and set it to ="ngModel" to access to the prop.
+  - Here is an example : 
+  ![wordNameErrors](pics/wordNameErrors.png)
+    - To access a specific type of error, use key value pairs like this => ``wordName.errors?.['minlength']``
+
+- __Pristine__: It is boolean and refers if the form has been intracted. If it's been, it turn to be false.
+- __Dirty__: The reverse of pristine.
+  - They can tell us use has interacted with the form and we can take an action to show errors etc. 
+    - Last but not least, they cannot reverse their default value unless the page refreshed or form resetted.
+
+### Resetting Forms
+
+- While we are using #templateReferences, we set it to ngForm. It is because that form are also NgForm so that we can access prop and methods to manipulate it. Sine we use the NgForm object to reset it, we need to pass the object we accessed using #TemplateReference
+  - reset method is used to reset all controls of the form.
+    - resetForm is used to reset and pass values to be displayed after reset.
+  - it turns pristine and dirty values to default.
 
