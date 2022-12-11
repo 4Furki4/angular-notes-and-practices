@@ -32,6 +32,55 @@
     - [Lifecycle Hooks](#lifecycle-hooks)
       - [ngOnInıt](#ngoninit)
     - [Component Communication](#component-communication)
+      - [Input](#input)
+      - [Output](#output)
+    - [Change Detection](#change-detection)
+    - [ngOnChanges](#ngonchanges)
+    - [DoCheck](#docheck)
+    - [Using Other Component's member without @Input or @Output](#using-other-components-member-without-input-or-output)
+    - [ng-templates](#ng-templates)
+    - [Template Reference](#template-reference)
+  - [Content Projection](#content-projection)
+    - [ngContentInit](#ngcontentinit)
+    - [ngOnDestroy](#ngonchanges)
+  - [Dependency Injection](#dependency-injection)
+    - [Services](#services)
+    - [Dependency Resolution Steps](#dependency-resolution-steps)
+    - [Resolution Modifiers](#resolution-modifiers)
+      - [Self](#self)
+      - [SkipSelf](#skipself)
+      - [Optional](#optional)
+      - [Host](#host)
+    - [Dependency Injection Providers](#dependency-injection-providers)
+      - [Class Based Providers](#class-based-providers)
+      - [Value Providers](#value-providers)
+  - [HTTP and Observables](#http-and-observables)
+    - [Setting HTTP Client](#setting-http-client)
+    - [Using HttpClient in services](#using-httpclient-in-services)
+    - [Observable](#observable)
+    - [HTTP Requests](#http-requests)
+      - [HttpEventTypes](#httpeventtypes)
+      - [RxJs Operators](#rxjs-operators)
+        - [shareReplay](#sharereplay)
+          - [unsubscribtion using async pipe](#unsubscribtion-using-async-pipe)
+        - [CatchError](#catcherror)
+        - [Map Operators](#map-operators)
+  - [Http Interceptors and APP_INITIALIZER](#http-interceptors-and-app_initializer)
+    - [Http Interceptors](#http-interceptors)
+    - [App_Initializer](#app_initializer)
+  - [Angular Router](#angular-router)
+    - [Setup Router](#setup-router)
+      - [Using Anchors](#using-anchors)
+      - [Router Outlet](#router-outlet)
+      - [Angular Material](#angular-material)
+    - [Wild Card Routes](#wild-card-routes)
+    - [Dynamin Routes](#dynamic-routes)
+    - [ActivatedRoute Service](#activatedroute-service)
+  - [Forms](#forms)
+    - [Template Driven Forms](#template-driven-forms)
+
+
+
 
 # Angular Notes
 ------------------
@@ -759,7 +808,7 @@ this.stream.subscribe(data => {
 ````
 
 
-### HTTP Request
+### HTTP Requests
 
 
 - We can reach the request status using HttpRequst class so that we can take actions depend on the status.
@@ -954,7 +1003,7 @@ const routes: Routes = [
 
 - Make sure that router outlet is used while using routing functionalities.
 
-### Angular Material 
+#### Angular Material 
 
 - It is UI component 
 
@@ -1032,3 +1081,12 @@ __Time to access passed data via id segment.__
 - The other way to access route params is using paramsMap that allows us to use some methods like get, has, getAll etc.
   - ``router.paramsMap.subscribe(map((params) => params.get('id'))``
   - It can be used to see whether the optional parameters are used or not using has method.
+
+-------------------------------------------------------------------
+Jumping to Forms
+
+
+## Forms
+
+### Template Driven Forms
+
