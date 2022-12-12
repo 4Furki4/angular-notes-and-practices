@@ -1143,10 +1143,38 @@ Jumping to Forms
   - They can tell us use has interacted with the form and we can take an action to show errors etc. 
     - Last but not least, they cannot reverse their default value unless the page refreshed or form resetted.
 
-### Resetting Forms
+#### Resetting Forms
 
 - While we are using #templateReferences, we set it to ngForm. It is because that form are also NgForm so that we can access prop and methods to manipulate it. Sine we use the NgForm object to reset it, we need to pass the object we accessed using #TemplateReference
   - reset method is used to reset all controls of the form.
     - resetForm is used to reset and pass values to be displayed after reset.
   - it turns pristine and dirty values to default.
 
+
+### Custom Directive with Forms
+
+- ``ng g d`` creates a new directive 
+  - it creates a component without template and style file so, lifecycle hooks are available inside of it.
+
+- We inject ElementRef interface inside the constructor and this helps us to access the element.
+  - But which element ? the element which the directive is used on.
+   - the directive name is defined inside of @Directive decorator like this :
+````js
+    @Directive({
+  selector: '[hinvHover]'
+})
+````
+
+- Once hinvHover directive is implemented in a html element, we can access it inside the component.
+  - also we can access the actual element using nativeElement despite the redundent informations.
+
+#### Renderer2 
+- There is a interface that can help to implement styles, classes etc. called Renderer2
+  - for example:
+````js
+this.renderer.setStyle(
+      this.element.nativeElement,
+      'backgroundColor',
+      'black'
+    );
+````
