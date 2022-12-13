@@ -1151,7 +1151,7 @@ Jumping to Forms
   - it turns pristine and dirty values to default.
 
 
-### Custom Directive with Forms
+## Custom Directive with Forms
 
 - ``ng g d`` creates a new directive 
   - it creates a component without template and style file so, lifecycle hooks are available inside of it.
@@ -1168,7 +1168,7 @@ Jumping to Forms
 - Once hinvHover directive is implemented in a html element, we can access it inside the component.
   - also we can access the actual element using nativeElement despite the redundent informations.
 
-#### Renderer2 
+### Renderer2 
 - There is a interface that can help to implement styles, classes etc. called Renderer2
   - for example:
 ````js
@@ -1177,4 +1177,144 @@ this.renderer.setStyle(
       'backgroundColor',
       'black'
     );
+````
+
+### HostListener
+
+- It allows us to manipulate DOM based on event actions like hover, click etc when directive is applied.
+
+````js
+@HostListener('actionName') ActionNameEvent(){
+  //Logic like chaging bg color
+  //methods can be called for manipulation ofc.
+}
+````
+- Here's some examples:
+````js
+@HostListener('mouseenter') mouseEnterEvent(eventData : Event){
+    this.renderer.setStyle(
+      this.element.nativeElement,
+      'backgroundColor',
+      'purple'
+    );
+  }
+  @HostListener('mouseleave') mouseLeaveEvent(eventData : Event){
+    this.renderer.setStyle(
+      this.element.nativeElement,
+      'backgroundColor',
+      'black'
+    );
+  }
+
+  @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    if(event.key === 'Enter'){
+      this.setBacgroundColor('green');
+    }
+  }
+
+````
+
+Note: If there is a input named as time same of directive name, it can be used without any error, both directive and input would work properly.
+
+### Custom Validation
+
+- First off, we need to implement Validator interface (not Validators class, it's used in Reactive Forms).
+
+- Then we need to hit the angular validator up that we are adding new validators using provider to inject NG_VALIDATOR token like this: 
+
+````js
+@Directive({
+  selector: '[hinvEmailValidator]', // when we use  this directives
+  providers: [
+    {
+      provide: NG_VALIDATORS,
+      useExisting: EmailValidatorDirective, // It also adds validators of this class.
+      multi: true
+    }
+  ]
+})
+````
+
+Validator interface adds this function so that we can access the values of the given control:
+
+````js
+validate(control: AbstractControl<any, any>): ValidationErrors | null {
+  // adding validations
+  // to achive the properties of the control.value, convert it to string setting it to a const value
+  const value = control.value
+  if(value.lenth >40){
+    ...
+    return {errorName : value}
+  }
+  return null // if there is no error.
+}
+````
+
+## Router Service
+
+- We can use router service in components in some cases that we do a logic and then navigate desired url.
+
+- inject Router comes from Angular/router
+
+- then use navigate or navigateByUrl:
+  - `this.router.navigate(['/word', 'add'])`
+  - `this.router.navigateByUrl('/word/add')`
+
+
+## Feature Module and Routing
+
+- Feature module allows us to separate components to different modules that ease to maintain and share the components.
+- Remember that the more projects get complicated and bigger, the more feature module gets useful.
+__READ ERRORS THAT IS GONNA LEAD YOU TO FIX ISSUES WHILE REFACTORING CODE BASE USING FEATURE MODULES!__
+- for example: to add a module for rooms, `ng g m rooms --routing --flat=true` is used.
+  - ``--routing`` adds routing module.
+  - `--flat=true` avoids creating new folder.
+- then carry your declarations to rooms.module.
+
+- now, we need to register our new module in imports of app.module to be able to make it available everywhere.
+
+- There are some components that our component we created module for can use another components, so we get to create modules for them and import the modules inside of imports.
+  - Make sure that components can be declared just once, that's why we create a new module.
+
+- __LAST BUT NOT LEAST__, we need to export the component we want to access, so we need to add
+  - `... exports: [HeaderComponent]...` this one.
+
+- Another important things is that once you carry your routes, make sure that you register your feature module's routemodules before appmodule! They are applied subsequently!
+- here it's:
+![routing-order](pics/routing-order.png)
+
+
+## Nested Routes and Child Routes
+
+- We can use nested routes to access components inside of a component.
+
+- to do so, we need to add the path and component inside of children arrary of the route.
+````js
+const routes: Routes = [
+  {path: 'rooms', component: RoomsComponent, children:[ //the room that's gonna be accessed
+    {path: ':id', component: RoomsBookingComponent},
+  ]},
+];
+````
+
+- then we need to add router-outlet inside of the component we want to access.
+  - `<router-outlet></router-outlet>`
+
+- NOTE : if we want to access the component that is not nested, we need to add a path without any value like this:
+````js
+const routes: Routes = [
+  {path: 'rooms', component: RoomsComponent, children:[ //the room that's gonna be accessed
+    {path: ':id', component: RoomsBookingComponent},
+    {path: '', component: RoomsListComponent}, // this one
+  ]},
+];
+````
+- NOTE2: If we use dynamic path, we need add static routes before dynamic ones like this:
+````js
+const routes: Routes = [
+  {path: 'rooms', component: RoomsComponent, children:[ //the room that's gonna be accessed
+    {path: 'add', component: AddRoomsComponent}, // this one
+    {path: ':id', component: RoomsBookingComponent},
+  ]},
+];
 ````

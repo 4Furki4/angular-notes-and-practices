@@ -4,12 +4,21 @@
 </div>
 <form>
     <div class="form-group offset-3 col-6 mb-3 mt-3">
-        <input hinvHover class="form-control" type="email" name="email" placeholder="provide your e mail" [(ngModel)]="email">
+        <input #emailModel="ngModel" hinvEmailValidator [bgColor]="bgColor" hinvHover class="form-control" type="email" name="email" placeholder="provide your e mail" [(ngModel)]="email">
+        <div>
+            {{emailModel.errors | json}}
+        </div>
     </div>
     <div class="form-group offset-3 col-6">
-        <input class="form-control" type="password" name="password" [(ngModel)]="password" placeholder="Enter your password">
+        <input [bgColor]="bgColor" hinvHover class="form-control" type="password" name="password" [(ngModel)]="password" placeholder="Enter your password">
     </div>
     <div class="form-group text-center mt-3">
         <button class="btn btn-outline-warning" (click)="login()">Login</button>
+    </div>
+    <div class="form-group text-center mt-3">
+        <select class="form-control-sm" [(ngModel)]="bgColor" [ngModelOptions]="{standalone: true}">
+            <option selected disabled value="#7b1fa2">Select a color</option>
+            <option *ngFor="let c of colorList" [value]="c.color">{{c.color}}</option>
+        </select>
     </div>
 </form>

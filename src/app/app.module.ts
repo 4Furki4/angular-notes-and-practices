@@ -27,7 +27,9 @@ import { FormsModule } from '@angular/forms';
 import { WordComponent } from './Word/word.component';
 import { LoginComponent } from './login/login.component';
 import { HoverDirective } from './hover.directive';
-
+import { EmailValidatorDirective } from './login/EmailValidator/email-validator.directive';
+import { RoomsModule } from './rooms/rooms.module';
+import { RoomsRoutingModule } from './rooms/rooms-routing.module';
 function initFactory(initService : InitService){
   return () => initService.init;
 }
@@ -36,20 +38,19 @@ function initFactory(initService : InitService){
 @NgModule({
   declarations: [
     AppComponent,
-    RoomsComponent,
-    RoomsListComponent,
     HeaderComponent,
     ContainerComponent,
     EmployeeComponent,
     AppNavComponent,
     NotFoundComponent,
-    RoomsBookingComponent,
     WordComponent,
     LoginComponent,
-    HoverDirective
+    HoverDirective,
+    EmailValidatorDirective,
   ],
   imports: [
     BrowserModule,
+    RoomsRoutingModule,
     AppRoutingModule,
     HttpClientModule,
     LayoutModule,
@@ -59,7 +60,8 @@ function initFactory(initService : InitService){
     MatIconModule,
     MatListModule,
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    RoomsModule
   ],
   providers: [
     {
