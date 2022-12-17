@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ConfigService } from '../services/config.service';
 import { IWord } from './IWord';
 import { WordService } from './word.service';
 
@@ -10,7 +11,7 @@ import { WordService } from './word.service';
 })
 export class WordComponent {
 
-  constructor(private wordService : WordService){
+  constructor(private wordService : WordService, private configService : ConfigService){
 
   }
   errors$ = this.wordService.errors;

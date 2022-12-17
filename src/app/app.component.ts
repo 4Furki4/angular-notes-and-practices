@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, Optional, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { LoggerServiceService } from './logger-service.service';
-import { RoomsComponent } from './rooms/rooms.component';
 
 @Component({
   selector: 'app-root',

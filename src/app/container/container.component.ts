@@ -1,6 +1,5 @@
 import { AfterContentInit, Component, ContentChild, Host } from '@angular/core';
 import { EmployeeComponent } from '../employee/employee.component';
-import { RoomsService } from '../rooms/services/rooms.service';
 
 @Component({
   selector: 'hinv-container',

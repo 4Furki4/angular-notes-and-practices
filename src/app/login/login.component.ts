@@ -1,6 +1,7 @@
 import { Component, ElementRef } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'hinv-login',
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
 
-  constructor(private router : Router){
+  constructor(private router : Router, private configService : ConfigService){
 
   }
   bgColor : string = "#7b1fa2";

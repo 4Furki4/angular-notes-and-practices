@@ -1318,3 +1318,46 @@ const routes: Routes = [
   ]},
 ];
 ````
+
+
+## Lazy Loading
+
+- As the name suggests, it loads the module when it's needed. 
+  - It's useful when we have a big module that we don't want to load it at the beginning or have modules that are not used frequently.
+- To do so, we need to add `loadChildren` to the route.
+
+````js
+const routes: Routes = [
+  {path: 'rooms', loadChildren: () => import('./rooms/rooms.module').then(m => m.RoomsModule)},
+];
+````
+- As we want to lazy load the module, remove the module from app.module's imports. We also need to isolate the module outside of the room.module.
+  - then as we added the rooms route path in app.routing.module, then we need to remove it from rooms.rouing.module
+
+### Lazy Loading using CLI
+
+- `ng g m booking --routing --route=booking --flat=true --module=app.module` is used to create a module with routing and flat structure.
+  - `--module=app.module` is used to add the lazy loaded module to app.module's imports.
+  - `--route=booking` is used to add the route path to app.module's routes.
+  - It adds the component to the module and adds the route path to app.module's routes.
+- You can add a new component after adding a module which registers the component to the module.
+  - `ng g m search `
+  - `ng g c search` It registers the component to the seacrh module added before.
+
+
+#### Provider Types
+- We've used root proveider so far and it creates single instance of the service.
+- We have another type named as `providedIn: 'any'` which creates a new instance of the service for each component.
+- If a service provider type is any, It'll create one instace for entire codebase but lazy loaded components will have seperate instances !!!!! wow.
+  - To do so, we need to add the service to the lazy loaded module's providers and so we are able to change the value of the provider!..
+
+## Routing Events
+
+- We can use router events to do some logic when the route changes.
+- As router events are observable, we can use rxjs operators to do some logic like filtering etc.
+- There are some events like NavigationStart, NavigationEnd, NavigationCancel, NavigationError, RoutesRecognized, GuardsCheckStart, GuardsCheckEnd, ResolveStart, ResolveEnd, ChildActivationStart, ChildActivationEnd, ActivationStart, ActivationEnd, Scroll
+
+- Guard are used to prevent the user from accessing the route.
+- Scroll event is used to scroll to the top of the page when the route changes.
+
+### Route Cards

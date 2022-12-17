@@ -1,5 +1,4 @@
 import { Component, Self, SkipSelf } from '@angular/core';
-import { RoomsService } from '../rooms/services/rooms.service';
 
 @Component({
   selector: 'hinv-employee',
@@ -10,7 +9,7 @@ export class EmployeeComponent {
   employeeName = "Furkan";
 
 
-  constructor(private roomsService : RoomsService){
+  constructor(){
 
   }
 }

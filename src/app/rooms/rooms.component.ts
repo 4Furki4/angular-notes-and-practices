@@ -1,10 +1,8 @@
-import { HttpErrorResponse, HttpEventType, HttpRequest } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { catchError, map, Observable, of, Subject, Subscription } from 'rxjs';
-import { IAppconfig } from '../AppConfig/appconfig.interface';
-import { APP_SERVICE_CONFIG } from '../AppConfig/appconfig.service';
-import { HeaderComponent } from '../header/header.component';
-import { localstorage } from '../javascript.api.token';
+import { RouteConfig } from '../AppConfig/routeConfig';
+import { RouteConfigToken } from '../AppConfig/routeConfig.service';
 import { IRoom, IRoomList } from './IRoom';
 import { RoomsService } from './services/rooms.service';
 
@@ -15,6 +13,7 @@ import { RoomsService } from './services/rooms.service';
 })
 export class RoomsComponent implements OnInit, AfterViewInit, OnDestroy {
   roomList: IRoomList[] = []
+
 
   error$ = new Subject();
   // word$ = this.roomService.getWord$.pipe(
@@ -119,8 +118,11 @@ export class RoomsComponent implements OnInit, AfterViewInit, OnDestroy {
     //   }
     //   )
   }
-  constructor(private roomService: RoomsService) {
+  constructor(private roomService: RoomsService, @Inject(RouteConfigToken) private routeConfig : RouteConfig) {
+  console.log(routeConfig);
+  
   }
+
 
   subscribtion !: Subscription;
   deleteWord(id: number) {
