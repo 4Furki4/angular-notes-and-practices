@@ -20,7 +20,6 @@ import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { FormsModule } from '@angular/forms';
-import { WordComponent } from './Word/word.component';
 import { LoginComponent } from './login/login.component';
 import { HoverDirective } from './hover.directive';
 import { EmailValidatorDirective } from './login/EmailValidator/email-validator.directive';
@@ -40,7 +39,6 @@ function initFactory(initService : InitService){
     EmployeeComponent,
     AppNavComponent,
     NotFoundComponent,
-    WordComponent,
     LoginComponent,
     HoverDirective,
     EmailValidatorDirective

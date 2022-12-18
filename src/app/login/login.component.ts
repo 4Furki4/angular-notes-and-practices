@@ -2,6 +2,7 @@ import { Component, ElementRef } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ConfigService } from '../services/config.service';
+import { LoginService } from './login.service';
 
 @Component({
   selector: 'hinv-login',
@@ -10,7 +11,7 @@ import { ConfigService } from '../services/config.service';
 })
 export class LoginComponent {
 
-  constructor(private router : Router, private configService : ConfigService){
+  constructor(private router : Router, private configService : ConfigService, private loginService : LoginService){
 
   }
   bgColor : string = "#7b1fa2";
@@ -18,13 +19,7 @@ export class LoginComponent {
   password!: string;
   login() {
     console.log("login works");
-    
-    if(this.email === "Admin@gmail.com" && this.password === "Admin"){
-      alert("login successful!, redirecting to word add page...");
-      setTimeout(() => {
-      this.router.navigateByUrl('/word/add');
-      },1000)
-    }
+    this.loginService.Login(this.email, this.password);
 }
   emailYazdir(ref : NgModel){
     console.log(ref);

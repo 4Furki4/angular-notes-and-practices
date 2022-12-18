@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ConfigService } from '../services/config.service';
 import { IWord } from './IWord';
 import { WordService } from './word.service';
@@ -7,12 +7,25 @@ import { WordService } from './word.service';
 @Component({
   selector: 'hinv-word',
   templateUrl: './word.component.html',
-  styleUrls: ['./word.component.scss']
+  styleUrls: ['./word.component.scss'],
+  providers: [FormBuilder]
 })
-export class WordComponent {
+export class WordComponent implements OnInit {
 
-  constructor(private wordService : WordService, private configService : ConfigService){
-
+  wordForm !: FormGroup;
+  get definitions() : FormArray {
+    return this.wordForm.get('definitions') as FormArray;
+  }
+  constructor(private wordService : WordService, private configService : ConfigService, private formBuilder : FormBuilder){
+  }
+  ngOnInit(): void {
+    this.wordForm = this.formBuilder.group({
+      name : ['', Validators.required],
+      definitions : this.formBuilder.array([this.formBuilder.group( {definition: ['', Validators.required], definitionType: [''], exampleSentence: ['']},)],)
+    });
+  }
+  addNewWord(){
+    console.log(this.wordForm.value);
   }
   errors$ = this.wordService.errors;
   successfulMessage! : string;
@@ -31,6 +44,12 @@ export class WordComponent {
     this.wordService.PostWord(this.word);
     form.resetForm();
     this.successfulMessage = "Word successfully added."
+  }
+  addDefinition(){
+    this.definitions.push(this.formBuilder.group( {definition: ['', Validators.required], definitionType: ['', Validators.required], exampleSentence: ['', Validators.required]}));
+  }
+  removeDefinition(index : number){
+    this.definitions.removeAt(index);
   }
 
 }

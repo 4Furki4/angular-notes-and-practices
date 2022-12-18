@@ -1360,4 +1360,134 @@ const routes: Routes = [
 - Guard are used to prevent the user from accessing the route.
 - Scroll event is used to scroll to the top of the page when the route changes.
 
-### Route Cards
+
+### Route Guards
+
+- Guards are used to prevent the user from accessing the route.
+- To add guards, we need to add canActivate to the route.
+- We add guards using ng g g guards/auth and select canActivate and canLoad.
+
+### CanActivate
+- Once we add the guard, we have a method named canActivate which returns a boolean value in the file we created.
+````js
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    // logic
+    return true;
+    // when true, it allows the user to access the route.
+    // when false, it prevents the user from accessing the route.
+  }
+````
+- So, we can add multiple guards to the route using __canActivate: [AuthGuard, AuthGuard2]__
+````js
+const routes: Routes = [
+  {path: 'rooms', loadChildren: () => import('./rooms/rooms.module').then(m => m.RoomsModule), canActivate: [AuthGuard]},
+];
+````
+
+### CanActivateChild
+
+- It's used to prevent the user from accessing the child routes.
+- It's used in parent routes that has children routes.
+- Here's an example:
+````js
+const routes: Routes = [
+  {path: 'rooms', component: RoomsComponent,canActivateChild: [RoomsGuard], children:[
+    {path: ':id', component: RoomsBookingComponent},
+  ]},
+];
+````
+
+### CanLoad
+
+- It's used to prevent the user from accessing the lazy loaded routes.
+
+- In order to use it, we need to add it to the route using canLoad
+
+
+## Reactive Forms
+
+- Import ReactiveFormsModule to the module that you want to use reactive forms.
+
+- We can use reactive forms to create forms that are dynamic and reactive.
+
+- We create forms using FormGroup and FormControl which means we create them using typescript not html.
+
+- We use FormControl to create a form control and FormGroup to create a form group.
+
+- FormBuilder is used to build complex forms.
+
+### Creating a Form
+
+- We create a form using FormGroup and FormControl.
+````js
+// first off, inject the form builder to the constructor
+  form = formbuilder.group({
+    name: new FormControl(''),
+    email: [''] // we can also use this way
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]), // you can add validators like this.
+    passwordConfirmation: new FormControl(''),
+  });
+````
+
+### Rendering the Form
+
+- We can render the form using formGroup directive.
+````html
+<form [formGroup]="form">
+  <input type="text" formControlName="name">
+  <input type="text" formControlName="email">
+  <input type="password" formControlName="password">
+  <input type="password" formControlName="passwordConfirmation">
+````
+- We can access values using FormGroup typed variable.value
+
+- To add default values and make it disabled, we can add them to the FormControl constructor.
+````js
+form = this.formbuilder.group({
+  name : [{value: "Furkan", disabled: true}],
+})...
+// but we can't get the value of disabled form control.
+// Disabled values can be accessed using formGroup.getRawValue() instead of formGroup.value
+````
+### Nested Form Groups
+
+- We can create nested form groups using FormGroup.
+````js
+form = this.formbuilder.group({
+  name : [{value: "Furkan", disabled: true}],
+  address: this.formbuilder.group({
+    city: [''],
+    street: [''],
+  })
+})...
+// It is just adding another FormGroup to the existing formgroup.
+````
+
+Note: We should use formGroupName in the div we put the nested form to access nested form groups
+
+- Then you can add expansion panel to the form to make it look better.
+
+### Dynamic Forms
+
+- We can create dynamic forms using formArray.
+````js
+form = this.formbuilder.group({
+  name : [{value: "Furkan", disabled: true}],
+  address: this.formbuilder.group({
+    city: [''],
+    street: [''],
+  }),
+  phones: this.formbuilder.array([
+    this.formbuilder.control(''),
+    this.formbuilder.control(''),
+  ])
+})...
+````
+- We can add new form controls and groups to the formArray using formArray.push() method.
+````js
+addPhone(){
+  this.phones.push(this.formbuilder.control(''));
+}
+````

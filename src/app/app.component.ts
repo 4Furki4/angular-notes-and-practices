@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, Optional, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { LoggerServiceService } from './logger-service.service';
 
 @Component({
@@ -8,7 +10,7 @@ import { LoggerServiceService } from './logger-service.service';
 })
 export class AppComponent implements AfterViewInit, OnInit {
   
-  constructor(@Optional() private loggerService : LoggerServiceService){
+  constructor(@Optional() private loggerService : LoggerServiceService, private router : Router){
 
   }
   // @ViewChild('user', {read : ViewContainerRef}) vcr! : ViewContainerRef;
@@ -16,6 +18,11 @@ export class AppComponent implements AfterViewInit, OnInit {
     @ViewChild('name', {static: true}) nameEl! : ElementRef;
 
     ngOnInit() {
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationStart)
+        )
+      .subscribe((event) => console.log(event)
+      );
       this.loggerService?.logMessage('AppComponent.ngOnInit')
     }
 
