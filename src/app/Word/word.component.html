@@ -56,6 +56,12 @@
         <mat-error *ngIf="wordForm.get('name')?.hasError('required')">
             Name is <strong>required</strong>
         </mat-error>
+        <mat-error *ngIf="wordForm.get('name')?.hasError('IsProfanity')">
+            Yasaklı kelime !
+        </mat-error>
+        <mat-error *ngIf="wordForm.get('name')?.hasError('hasCountryCode') || wordForm.get('name')?.hasError('beginsWithZero')">
+            Please do not use country code or start with 0 and +
+        </mat-error>
     </mat-form-field>
     <div>
         <div formArrayName="definitions">

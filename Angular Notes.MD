@@ -1405,6 +1405,7 @@ const routes: Routes = [
 
 - In order to use it, we need to add it to the route using canLoad
 
+--------------------
 
 ## Reactive Forms
 
@@ -1523,3 +1524,172 @@ form = this.formbuilder.group({
   </mat-error>
 </mat-form-field>
 ````
+
+### patchValue and setValue
+
+- setValue is used to set all the values of the form.
+- patchValue is used to set some of the values of the form. 
+````js
+form.patchValue({
+  name: 'Furkan',
+  address: {
+    city: 'Istanbul',
+    street: 'Kadikoy',
+  }
+})
+````
+
+### FormChange
+
+- We can listen to the form changes using form.valueChanges.subscribe() method.
+- It is stream so, we can subscribe to it.
+````js
+form.valueChanges.subscribe(value => {
+  console.log(value);
+})
+````
+- It would log every keypress on the form.
+
+- updateOn: 'blur' can be added to the form control to listen to the blur event instead of keypress. When we add updateOn: 'blur' to FormControl initializer as argument, it would log the value when we leave the input.
+  - OFC, we can add it to the FormGroup as well.
+- This works for both template and reactive forms.
+  - You should add ``updateOn: 'blur'`` to nGModelOptions in the template driven forms.
+
+### rxJs Operators for valueChanges
+
+#### mergeMap
+
+``this.wordForm.valueChanges.pipe(mergeMap((value) => this.wordService.PostWord(value))).subscribe();``
+
+-  It sends value to the server as soon as the user types something.
+
+
+#### switchMap
+
+- It cancels the previous request and sends the new one.
+
+#### exhaustMap
+
+- It sends new request only when the previous request is completed.
+
+
+### Custom Validators
+
+- Using AbstractControl we can create custom validators.
+````js
+export class PasswordValidator {
+  static cannotContainSpace(control: AbstractControl): ValidationErrors | null {
+    if ((control.value as string).indexOf(' ') >= 0) { // we accessed the value of the form control using control.value
+      return { cannotContainSpace: true };
+    }
+    return null;
+  }
+}
+````
+- You can access the custom validator using formControlName.hasError('cannotContainSpace').
+- You can also pass parameters to the custom validator.
+````js
+export class PasswordValidator {
+  static cannotContainSpecialChar(char : string): ValidationErrors | null {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if ((control.value as string).indexOf(char) >= 0) { 
+        return { cannotContainSpecialChar: true };
+      }
+      return null;
+    }
+  }
+}
+````
+----------------------------------------------
+
+
+### CanDeactivate
+
+- We can use CanDeactivate to prevent the user from leaving the page without saving the changes.
+
+- First, Implement CanDeactivate interface in the component.
+````js
+export class WordComponent implements OnInit, CanDeactivate<WordComponent> { // we passed the component to the CanDeactivate interface to access the component methods.
+  ...
+}
+````
+- then add canDeactivate method to the component.
+````js
+canDeactivate(component: WordComponent): boolean {
+  if (component.wordForm.dirty) { // we accessed component form using component.wordForm
+    return confirm('Are you sure you want to discard your changes?');
+  }
+  return true;
+}
+````
+
+- Then we can add canDeactivate guard to the route.
+````js
+const routes: Routes = [
+  { path: 'words', component: WordListComponent },
+  { path: 'words/:id', component: WordComponent, canDeactivate: [CanDeactivateGuard] }, // we added canDeactivate guard to the route.
+  { path: 'words/:id/edit', component: WordComponent, canDeactivate: [CanDeactivateGuard] },
+  { path: '', redirectTo: '/words', pathMatch: 'full' },
+  { path: '**', component: PageNotFoundComponent }
+];
+````
+
+### Custom Pipe
+
+- We can create custom pipes to transform the data using ng g p name which looks like this:
+````js
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter'
+})
+export class FilterPipe implements PipeTransform {
+
+  transform(words: Words, words: string): Words[] {
+    //... logic
+    return filteredWords;
+  }
+
+}
+````
+- We can use the custom pipe in the template like this:
+````html
+{{words | filter:searchWord}}
+````
+
+### Resolve Guard
+
+- We can use Resolve Guard to fetch the data before the component is loaded to prevent the flickering.
+
+- First, we need to implement Resolve interface in the component.
+````js
+export class WordComponent implements OnInit, CanDeactivate<WordComponent>, Resolve<Word> { // we passed the component to the CanDeactivate interface to access the component methods.
+  ...
+}
+````
+- Then we need to add resolve method to the component.
+````js
+resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Word> {
+  const id = +route.paramMap.get('id');
+  return this.wordService.getWord(id);
+}
+````
+- Then we can add resolve guard to the route.
+````js
+const routes: Routes = [
+  { path: 'words', component: WordListComponent },
+  { path: 'words/:id', component: WordComponent, resolve: { word: WordResolver } }, // we added resolve guard to the route.
+  { path: 'words/:id/edit', component: WordComponent, resolve: { word: WordResolver } }, // we added resolve guard value as key-word pair, so we can access the data using word key.
+  { path: '', redirectTo: '/words', pathMatch: 'full' },
+  { path: '**', component: PageNotFoundComponent }
+];
+````
+
+- We can access the data using activatedRoute.data['word'] as observable.
+
+- We can also use pipe to filter the data.
+````js
+words$ = activatedRoute.data['word'].pipe(pluck('words'));
+````
+
+- now we'll get the data before the component is loaded which leads some delay but it prevents the flickering.

@@ -10,18 +10,9 @@ export class WordService {
   errors = new Subject()
   constructor(private htpp : HttpClient) { }
 
-  PostWord (word : IWord) {
-    this.htpp.post("https://localhost:5500/api/Dictionary/Words", word).pipe(catchError((err : HttpErrorResponse) => {
-      this.errors.next(err.message);
-      return of();
-    }))
-    .subscribe({
-      next: data => {
-        console.log(data)
-      },
-      error: (error :HttpErrorResponse) => {
-        console.log(error);
-      }
-    })
+  PostWord (word : any) {
+    console.log("postword called");
+    
+    return this.htpp.post("https://jsonplaceholder.typicode.com/posts", word)
   }
 }

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { mergeMap } from 'rxjs';
 import { ConfigService } from '../services/config.service';
 import { IWord } from './IWord';
+import { CustomValidators } from './validations/custom-validators';
 import { WordService } from './word.service';
 
 @Component({
@@ -20,7 +22,7 @@ export class WordComponent implements OnInit {
   }
   ngOnInit(): void {
     this.wordForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      name: ['', [Validators.required, Validators.minLength(2), CustomValidators.DenyProfanity, CustomValidators.DenyCountryCode, CustomValidators.DenyBeginsWithZero ]],
       definitions: this.formBuilder.array([this.formBuilder.group(
         {
           definition: ['', [Validators.required, Validators.minLength(3)]],
@@ -29,6 +31,11 @@ export class WordComponent implements OnInit {
         }
       )])
     });
+    // this.wordForm.valueChanges.subscribe(value => {
+    //   console.log(value);
+    // });
+
+    this.wordForm.valueChanges.pipe(mergeMap((value) => this.wordService.PostWord(value))).subscribe();
   }
   addNewWord() {
     console.log(this.wordForm.value);
