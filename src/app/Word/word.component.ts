@@ -13,43 +13,51 @@ import { WordService } from './word.service';
 export class WordComponent implements OnInit {
 
   wordForm !: FormGroup;
-  get definitions() : FormArray {
+  get definitions(): FormArray {
     return this.wordForm.get('definitions') as FormArray;
   }
-  constructor(private wordService : WordService, private configService : ConfigService, private formBuilder : FormBuilder){
+  constructor(private wordService: WordService, private configService: ConfigService, private formBuilder: FormBuilder) {
   }
   ngOnInit(): void {
     this.wordForm = this.formBuilder.group({
-      name : ['', Validators.required],
-      definitions : this.formBuilder.array([this.formBuilder.group( {definition: ['', Validators.required], definitionType: [''], exampleSentence: ['']},)],)
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      definitions: this.formBuilder.array([this.formBuilder.group(
+        {
+          definition: ['', [Validators.required, Validators.minLength(3)]],
+          definitionType: ['', [Validators.required, Validators.minLength(3)]],
+          exampleSentence: ['']
+        }
+      )])
     });
   }
-  addNewWord(){
+  addNewWord() {
     console.log(this.wordForm.value);
+    this.wordForm.reset();
   }
   errors$ = this.wordService.errors;
-  successfulMessage! : string;
-  word : IWord = {
-    name : '',
-    definitions : [
+  successfulMessage!: string;
+  word: IWord = {
+    name: '',
+    definitions: [
       {
-        definition : '',
-        definitionType : '',
+        definition: '',
+        definitionType: '',
         exampleSentence: ''
       }
     ]
   }
 
-  AddWord(form : NgForm) {
+  AddWord(form: NgForm) {
     this.wordService.PostWord(this.word);
     form.resetForm();
     this.successfulMessage = "Word successfully added."
   }
-  addDefinition(){
-    this.definitions.push(this.formBuilder.group( {definition: ['', Validators.required], definitionType: ['', Validators.required], exampleSentence: ['', Validators.required]}));
+  addDefinition() {
+    this.definitions.push(this.formBuilder.group({ definition: ['', Validators.required], definitionType: ['', Validators.required], exampleSentence: ['', Validators.required] }));
   }
-  removeDefinition(index : number){
+  removeDefinition(index: number) {
     this.definitions.removeAt(index);
   }
+
 
 }

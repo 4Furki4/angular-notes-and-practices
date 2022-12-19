@@ -1491,3 +1491,35 @@ addPhone(){
   this.phones.push(this.formbuilder.control(''));
 }
 ````
+
+### Form Validation
+
+- We can add validators to the form controls.
+````js
+form = this.formbuilder.group({
+  name : [{value: "Furkan", disabled: true}],
+  address: this.formbuilder.group({
+    city: [''],
+    street: [''],
+  }),
+  phones: this.formbuilder.array([
+    this.formbuilder.control('', [Validators.required]),
+    this.formbuilder.control(''),
+  ])
+})...
+````
+- We can access the validators using form.formControlName.hasError('required') or similar methods.
+
+````html
+<mat-form-field appearance="fill" class="example-full-width">
+  <mat-label>Name</mat-label>
+  <input formControlName="name" matInput>
+  <mat-hint *ngIf="wordForm.get('name')?.valid && wordForm.get('name')?.dirty">There you go!</mat-hint>
+  <mat-error *ngIf="wordForm.get('name')?.hasError('minlength') && !wordForm.get('name')?.hasError('required') ">
+      Please enter minimum 2 characters 
+  </mat-error> 
+  <mat-error *ngIf="wordForm.get('name')?.hasError('required')">
+      Name is <strong>required</strong>
+  </mat-error>
+</mat-form-field>
+````

@@ -49,6 +49,13 @@
     <mat-form-field appearance="fill" class="example-full-width">
         <mat-label>Name</mat-label>
         <input formControlName="name" matInput>
+        <mat-hint *ngIf="wordForm.get('name')?.valid && wordForm.get('name')?.dirty">There you go!</mat-hint>
+        <mat-error *ngIf="wordForm.get('name')?.hasError('minlength') && !wordForm.get('name')?.hasError('required') ">
+            Please enter minimum 2 characters
+        </mat-error>
+        <mat-error *ngIf="wordForm.get('name')?.hasError('required')">
+            Name is <strong>required</strong>
+        </mat-error>
     </mat-form-field>
     <div>
         <div formArrayName="definitions">
@@ -57,7 +64,6 @@
                     <mat-form-field appearance="fill" class="example-full-width">
                         <mat-label>Definition</mat-label>
                         <input formControlName="definition" matInput>
-                        <button type="button" (click)="removeDefinition(i)" mat-raised-button color="warn">Remove Definition</button>
                     </mat-form-field>
                     <mat-form-field appearance="fill" class="example-full-width">
                         <mat-label>Definition Type</mat-label>
@@ -67,6 +73,11 @@
                         <mat-label>Example Sentence</mat-label>
                         <input formControlName="exampleSentence" matInput>
                     </mat-form-field>
+                    <div class="row">
+                        <button class="offset-4 col-4 " type="button" (click)="removeDefinition(i)" mat-raised-button
+                            color="warn">Remove
+                            Definition</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,7 +89,10 @@
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
     </mat-form-field> -->
-    <div><button type="submit" mat-raised-button color="warn">Warn</button>
-        <button type="button" (click)="addDefinition()" mat-raised-button color="warn">Add Definition</button>
-        </div>
+    <div class="mt-5">
+        <button class="offset-2" [disabled]="wordForm.invalid" (click)="addNewWord()" type="submit" mat-raised-button
+            color="warn">Submit</button>
+        <button class="offset-2 col-4" type="button" (click)="addDefinition()" mat-raised-button color="warn">Add
+            Definition</button>
+    </div>
 </form>
